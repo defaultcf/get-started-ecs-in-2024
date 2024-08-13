@@ -47,7 +47,7 @@ resource "aws_launch_template" "runner" {
       image_id = "ami-043df6ccca357ecdf"
     }
     "x86_64" = {
-      instance_type = "t3.medium"
+      instance_type = "t2.medium"
       # With AMI name mentioned in the comments
       # amiFilter=[{"Name":"owner-alias","Values":["amazon"]},{"Name":"name","Values":["al2023-ami-ecs-hvm-*-x86_64"]}]
       # currentImageName=al2023-ami-ecs-hvm-2023.0.20240807-kernel-6.1-x86_64
@@ -60,9 +60,9 @@ resource "aws_launch_template" "runner" {
   vpc_security_group_ids = [aws_security_group.runner.id]
   user_data = base64encode(
     <<EOF
-    #!/bin/bash
-    echo "ECS_CLUSTER=${aws_ecs_cluster.main.name}" >> /etc/ecs/ecs.config
-    EOF
+#!/bin/bash
+echo "ECS_CLUSTER=${aws_ecs_cluster.main.name}" >> /etc/ecs/ecs.config
+EOF
   )
 
   image_id = each.value.image_id
@@ -87,7 +87,7 @@ resource "aws_autoscaling_group" "runners" {
   name                  = "runners"
   vpc_zone_identifier   = [for k, v in aws_subnet.public : v.id]
   max_size              = 6
-  min_size              = 1
+  min_size              = 2
   desired_capacity      = 2
   desired_capacity_type = "units"
 
@@ -131,11 +131,13 @@ resource "aws_autoscaling_group" "runners" {
       }
 
       override {
-        instance_type = aws_launch_template.runner["arm64"].instance_type
+        instance_type     = aws_launch_template.runner["arm64"].instance_type
+        weighted_capacity = "3"
       }
 
       override {
-        instance_type = aws_launch_template.runner["x86_64"].instance_type
+        instance_type     = aws_launch_template.runner["x86_64"].instance_type
+        weighted_capacity = "2"
         launch_template_specification {
           launch_template_id = aws_launch_template.runner["x86_64"].id
           version            = aws_launch_template.runner["x86_64"].latest_version
@@ -157,6 +159,7 @@ resource "aws_autoscaling_group" "runners" {
   }
 
   lifecycle {
+    create_before_destroy = true
     ignore_changes = [
       desired_capacity,
     ]

@@ -11,7 +11,6 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-
 resource "aws_ecs_capacity_provider" "main" {
   name = "main"
 
@@ -38,4 +37,30 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
     weight            = 100
     capacity_provider = aws_ecs_capacity_provider.main.name
   }
+}
+
+resource "aws_ecs_task_definition" "app" {
+  family = "app"
+  container_definitions = jsonencode([
+    {
+      name      = "app"
+      image     = "docker.io/nginx:1.27.0"
+      cpu       = 10
+      memory    = 256
+      essential = true
+      portMappings = [
+        {
+          containerPort = 80
+          hostPort      = 80
+        },
+      ]
+    },
+  ])
+}
+
+resource "aws_ecs_service" "app" {
+  name            = "app"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = 2
 }
