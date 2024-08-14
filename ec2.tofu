@@ -85,7 +85,7 @@ EOF
 
 resource "aws_autoscaling_group" "runners" {
   name                  = "runners"
-  vpc_zone_identifier   = [for k, v in aws_subnet.public : v.id]
+  vpc_zone_identifier   = [for subnet in aws_subnet.private : subnet.id]
   max_size              = 6
   min_size              = 2
   desired_capacity      = 2
@@ -188,19 +188,14 @@ resource "aws_security_group" "runner" {
   }
 }
 
-#resource "aws_security_group_rule" "runner_ingress_alb" {
-#  for_each = toset([
-#    aws_security_group.alb_v4.id,
-#    aws_security_group.alb_for_summaly.id,
-#  ])
-#
-#  security_group_id        = aws_security_group.runner.id
-#  type                     = "ingress"
-#  from_port                = 0
-#  to_port                  = 0
-#  protocol                 = "-1"
-#  source_security_group_id = each.value
-#}
+resource "aws_security_group_rule" "runner_ingress_alb" {
+  security_group_id        = aws_security_group.runner.id
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = aws_security_group.alb.id
+}
 
 resource "aws_security_group_rule" "for_runner_egress" {
   security_group_id = aws_security_group.runner.id
