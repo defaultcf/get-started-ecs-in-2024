@@ -1,6 +1,6 @@
 # Get Started ECS in 2024
 
-本リポジトリは [今から始める Amazon ECS in 2024 - Zenn] のサンプルコードです。
+本リポジトリは [Amazon ECS の便利な設定 in 2024](https://zenn.dev/cybozu_ept/articles/get-started-ecs-in-2024) のサンプルコードです。
 
 
 ## Requirements
@@ -12,6 +12,7 @@
 ## Setup
 
 ```bash
+aqua i
 tofu init
 tofu apply
 ```
