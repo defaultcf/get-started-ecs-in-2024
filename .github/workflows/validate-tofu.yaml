@@ -12,4 +12,5 @@ jobs:
       - uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: 1.8.1
+      - run: tofu init
       - run: tofu validate
