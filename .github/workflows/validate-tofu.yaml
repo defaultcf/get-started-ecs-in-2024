@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '**.tofu'
+      - .github/workflows/validate-tofu.yaml
 
 jobs:
   validate:
