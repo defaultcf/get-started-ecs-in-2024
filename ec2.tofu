@@ -59,10 +59,10 @@ resource "aws_launch_template" "runner" {
   instance_type          = each.value.instance_type
   vpc_security_group_ids = [aws_security_group.runner.id]
   user_data = base64encode(
-    <<EOF
-#!/bin/bash
-echo "ECS_CLUSTER=${aws_ecs_cluster.main.name}" >> /etc/ecs/ecs.config
-EOF
+    <<-EOF
+    #!/bin/bash
+    echo "ECS_CLUSTER=${aws_ecs_cluster.main.name}" >> /etc/ecs/ecs.config
+    EOF
   )
 
   image_id = each.value.image_id

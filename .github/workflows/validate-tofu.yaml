@@ -1,0 +1,15 @@
+name: Validate Tofu
+on:
+  push:
+    paths:
+      - '**.tofu'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.8.1
+      - run: tofu validate
