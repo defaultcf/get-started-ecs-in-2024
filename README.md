@@ -6,13 +6,13 @@
 ## Requirements
 - [aqua](https://aquaproj.github.io/)
   - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)
-  - [OpenTofu](https://opentofu.org/)
+  - [Terraform](https://developer.hashicorp.com/terraform)
 
 
 ## Setup
 
 ```bash
 aqua i
-tofu init
-tofu apply
+terraform init
+terraform apply
 ```

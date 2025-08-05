@@ -10,5 +10,5 @@ registries:
 - type: standard
   ref: v4.212.0 # renovate: depName=aquaproj/aqua-registry
 packages:
-- name: opentofu/opentofu@v1.8.1
+- name: hashicorp/terraform@v1.8.1
 - name: aws/aws-cli@2.17.26
